@@ -1,0 +1,42 @@
+generator client {
+  provider        = "prisma-client-js"
+  engineType      = "wasm"
+  output          = "../src/__generated__/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./stadium.db"
+}
+
+model Booking {
+  id            String   @id @default(cuid())
+  bookingNumber String   @unique
+  clientName    String
+  clientPhone   String
+  date          DateTime
+  startTime     String
+  endTime       String
+  price         Float
+  paid          Boolean  @default(false)
+  receiptPath   String?
+  notes         String?
+  status        String   @default("confirmed")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([date, startTime])
+  @@index([date])
+}
+
+model StadiumSetting {
+  id        String   @id @default(cuid())
+  name      String   @default("City Football Stadium")
+  openTime  String   @default("08:00")
+  closeTime String   @default("23:00")
+  slotUnit  Int      @default(60)
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

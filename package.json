@@ -1,0 +1,49 @@
+{
+  "name": "stadium-booking-system",
+  "version": "1.0.0",
+  "description": "Stadium Booking System – Premium Edition",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "dev": "concurrently --kill-others \"node node_modules/vite/bin/vite.js\" \"wait-on http://localhost:5173 && node node_modules/electron/cli.js --no-sandbox . --dev\"",
+    "build:renderer": "node node_modules/vite/bin/vite.js build",
+    "build:main": "node node_modules/typescript/lib/tsc.js -p tsconfig.main.json",
+    "build:preload": "node node_modules/typescript/lib/tsc.js -p tsconfig.preload.json",
+    "build": "npm run build:main && npm run build:preload && npm run build:renderer && node -e \"const f=require('fs'); const p=require('path'); if (f.existsSync('src/__generated__')) { f.cpSync('src/__generated__', 'dist/__generated__', {recursive:true, force:true}); console.log('Copied prisma client'); }\"",
+    "prisma:generate": "node node_modules/prisma/build/index.js generate",
+    "prisma:migrate": "node node_modules/prisma/build/index.js migrate dev --name init",
+    "prisma:studio": "node node_modules/prisma/build/index.js studio",
+    "start": "node node_modules/electron/cli.js .",
+    "pack": "node node_modules/electron-builder/cli.js --dir",
+    "dist": "node node_modules/electron-builder/cli.js",
+    "postinstall": "node node_modules/prisma/build/index.js generate"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.3.0",
+    "@prisma/client": "^5.14.0",
+    "antd": "^5.18.0",
+    "dayjs": "^1.11.11",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.23.1",
+    "recharts": "^2.12.7",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/uuid": "^9.0.8",
+    "@vitejs/plugin-react": "^4.3.0",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
+    "electron": "^30.0.8",
+    "electron-builder": "^24.13.3",
+    "postcss": "^8.4.38",
+    "prisma": "^5.14.0",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.12",
+    "wait-on": "^7.2.0"
+  }
+}

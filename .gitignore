@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-installer/
+release/
+prisma/stadium.db
+query_engine-*.dll.node
+src/__generated__/
+*.js.map
+.env
+.DS_Store
