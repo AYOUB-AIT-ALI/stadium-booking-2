@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
-interface SettingsProps {}
+import { useLang } from '../context/LanguageContext';
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
@@ -22,7 +21,8 @@ const labelStyle: React.CSSProperties = {
   display: 'block',
 };
 
-function Settings({}: SettingsProps) {
+function Settings() {
+  const { t, lang, setLang } = useLang();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [name, setName] = useState('');
@@ -55,9 +55,9 @@ function Settings({}: SettingsProps) {
     const res = await window.electronAPI.updateSettings({ name, phone, address, openTime, closeTime, slotUnit });
     setSaving(false);
     if (res.success) {
-      alert('Settings saved successfully!');
+      alert(t('settings.saved'));
     } else {
-      alert(res.error || 'Failed to save settings.');
+      alert(res.error || t('settings.failed'));
     }
   };
 
@@ -68,8 +68,8 @@ function Settings({}: SettingsProps) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>Settings</div>
-        <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>Configure your stadium and application</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>{t('settings.title')}</div>
+        <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>{t('settings.subtitle')}</div>
       </div>
 
       <div style={{
@@ -87,10 +87,10 @@ function Settings({}: SettingsProps) {
             marginBottom: 16,
             paddingBottom: 12,
             borderBottom: '1px solid #e2e8f0',
-          }}>🏟️ Stadium Information</div>
+          }}>🏟️ {t('settings.stadiumInfo')}</div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Stadium Name</label>
+            <label style={labelStyle}>{t('settings.stadiumName')}</label>
             <input
               style={inputStyle}
               value={name}
@@ -101,7 +101,7 @@ function Settings({}: SettingsProps) {
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Phone</label>
+            <label style={labelStyle}>{t('settings.phone')}</label>
             <input
               style={inputStyle}
               value={phone}
@@ -112,7 +112,7 @@ function Settings({}: SettingsProps) {
           </div>
 
           <div style={{ marginBottom: 16 }}>
-            <label style={labelStyle}>Address</label>
+            <label style={labelStyle}>{t('settings.address')}</label>
             <textarea
               style={{ ...inputStyle, resize: 'vertical', minHeight: 70, fontFamily: 'inherit' }}
               value={address}
@@ -131,11 +131,11 @@ function Settings({}: SettingsProps) {
             marginBottom: 16,
             paddingBottom: 12,
             borderBottom: '1px solid #e2e8f0',
-          }}>⏰ Operating Hours</div>
+          }}>⏰ {t('settings.operatingHours')}</div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
             <div>
-              <label style={labelStyle}>Open Time</label>
+              <label style={labelStyle}>{t('settings.openTime')}</label>
               <input
                 type="time"
                 style={inputStyle}
@@ -144,7 +144,7 @@ function Settings({}: SettingsProps) {
               />
             </div>
             <div>
-              <label style={labelStyle}>Close Time</label>
+              <label style={labelStyle}>{t('settings.closeTime')}</label>
               <input
                 type="time"
                 style={inputStyle}
@@ -153,7 +153,7 @@ function Settings({}: SettingsProps) {
               />
             </div>
             <div>
-              <label style={labelStyle}>Slot (min)</label>
+              <label style={labelStyle}>{t('settings.slotUnit')}</label>
               <select
                 style={inputStyle}
                 value={slotUnit}
@@ -164,6 +164,57 @@ function Settings({}: SettingsProps) {
                 <option value={90}>90 min</option>
                 <option value={120}>120 min</option>
               </select>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ marginBottom: 24 }}>
+          <div style={{
+            fontSize: 15,
+            fontWeight: 700,
+            color: '#0f172a',
+            marginBottom: 16,
+            paddingBottom: 12,
+            borderBottom: '1px solid #e2e8f0',
+          }}>🌐 {t('settings.language')}</div>
+
+          <div>
+            <label style={labelStyle}>{t('settings.languageLabel')}</label>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button
+                onClick={() => setLang('en')}
+                style={{
+                  flex: 1,
+                  padding: '11px 14px',
+                  border: lang === 'en' ? '2px solid #10b981' : '1.5px solid #e2e8f0',
+                  borderRadius: 10,
+                  background: lang === 'en' ? '#f0fdf4' : '#ffffff',
+                  color: lang === 'en' ? '#059669' : '#475569',
+                  fontSize: 14,
+                  fontWeight: lang === 'en' ? 700 : 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                🇬🇧 English
+              </button>
+              <button
+                onClick={() => setLang('fr')}
+                style={{
+                  flex: 1,
+                  padding: '11px 14px',
+                  border: lang === 'fr' ? '2px solid #10b981' : '1.5px solid #e2e8f0',
+                  borderRadius: 10,
+                  background: lang === 'fr' ? '#f0fdf4' : '#ffffff',
+                  color: lang === 'fr' ? '#059669' : '#475569',
+                  fontSize: 14,
+                  fontWeight: lang === 'fr' ? 700 : 500,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                🇫🇷 Français
+              </button>
             </div>
           </div>
         </div>
@@ -197,7 +248,7 @@ function Settings({}: SettingsProps) {
               }
             }}
           >
-            {saving ? 'Saving...' : 'Save Settings'}
+            {saving ? t('settings.saving') : t('settings.save')}
           </button>
         </div>
       </div>

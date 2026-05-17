@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useLang } from '../context/LanguageContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -7,16 +8,17 @@ interface LayoutProps {
 }
 
 const navItems = [
-  { path: '/today', label: 'Today', icon: '📅' },
-  { path: '/add-booking', label: 'Add Booking', icon: '➕' },
-  { path: '/bookings', label: 'History', icon: '📋' },
-  { path: '/reports', label: 'Reports', icon: '📊' },
-  { path: '/settings', label: 'Settings', icon: '⚙️' },
+  { path: '/today', key: 'nav.today', icon: '📅' },
+  { path: '/add-booking', key: 'nav.addBooking', icon: '➕' },
+  { path: '/bookings', key: 'nav.history', icon: '📋' },
+  { path: '/reports', key: 'nav.reports', icon: '📊' },
+  { path: '/settings', key: 'nav.settings', icon: '⚙️' },
 ];
 
 function Layout({ children, settings }: LayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, lang } = useLang();
 
   return (
     <div style={{
@@ -44,10 +46,10 @@ function Layout({ children, settings }: LayoutProps) {
           borderBottom: '1px solid rgba(255,255,255,0.06)',
         }}>
           <div style={{ color: '#ffffff', fontWeight: 700, fontSize: 16, letterSpacing: '0.3px' }}>
-            ⚽ Stadium Booking
+            ⚽ {t('app.title')}
           </div>
           <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 2 }}>
-            Premium Edition
+            {t('app.subtitle')}
           </div>
         </div>
 
@@ -92,7 +94,7 @@ function Layout({ children, settings }: LayoutProps) {
                 }}
               >
                 <span style={{ fontSize: 18, lineHeight: 1 }}>{item.icon}</span>
-                <span>{item.label}</span>
+                <span>{t(item.key)}</span>
                 {isActive && (
                   <span style={{
                     marginLeft: 'auto',
@@ -125,7 +127,7 @@ function Layout({ children, settings }: LayoutProps) {
             {settings?.name || 'City Football Stadium'}
           </div>
           <div style={{ fontSize: 13, color: '#64748b', marginBottom: 20, marginTop: 2 }}>
-            {new Date().toLocaleDateString('en-US', {
+            {new Date().toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',

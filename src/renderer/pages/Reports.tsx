@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic, Table, Spin, Empty, Select } from 'antd';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { useLang } from '../context/LanguageContext';
 
 interface ReportsProps {
   settings: any;
@@ -9,6 +10,7 @@ interface ReportsProps {
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 function Reports({ settings }: ReportsProps) {
+  const { t } = useLang();
   const now = new Date();
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
@@ -28,14 +30,16 @@ function Reports({ settings }: ReportsProps) {
     setLoading(false);
   };
 
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const monthNames = lang === 'fr'
+    ? ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc']
+    : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   if (loading) {
     return <div className="text-center py-20"><Spin size="large" /></div>;
   }
 
   if (!data) {
-    return <Empty description="No data available" />;
+    return <Empty description={t('reports.noData')} />;
   }
 
   const topClientsData = data.topClients.map((c: any) => ({ name: c.name, value: c.count }));
@@ -44,7 +48,7 @@ function Reports({ settings }: ReportsProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <h2 className="text-xl font-semibold text-slate-800 mr-auto">Monthly Reports</h2>
+        <h2 className="text-xl font-semibold text-slate-800 mr-auto">{t('reports.title')}</h2>
         <select
           value={month}
           onChange={(e) => setMonth(parseInt(e.target.value))}
@@ -68,28 +72,28 @@ function Reports({ settings }: ReportsProps) {
       <Row gutter={16}>
         <Col span={8}>
           <Card>
-            <Statistic title="Total Revenue" value={data.totalRevenue} suffix="DHs" precision={2} />
+            <Statistic title={t('reports.totalRevenue')} value={data.totalRevenue} suffix="DHs" precision={2} />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Total Bookings" value={data.totalBookings} />
+            <Statistic title={t('reports.totalBookings')} value={data.totalBookings} />
           </Card>
         </Col>
         <Col span={8}>
           <Card>
-            <Statistic title="Unique Clients" value={data.uniqueClients} />
+            <Statistic title={t('reports.uniqueClients')} value={data.uniqueClients} />
           </Card>
         </Col>
       </Row>
 
-      <Card title="Daily Revenue">
+      <Card title={t('reports.dailyRevenue')}>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={data.dailyRevenue}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" tick={{ fontSize: 12 }} />
             <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip formatter={(value: number) => [`${value.toFixed(2)} DHs`, 'Revenue']} />
+            <Tooltip formatter={(value: number) => [`${value.toFixed(2)} DHs`, t('reports.revenue')]} />
             <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
@@ -97,7 +101,7 @@ function Reports({ settings }: ReportsProps) {
 
       <Row gutter={16}>
         <Col span={12}>
-          <Card title="Top Clients">
+          <Card title={t('reports.topClients')}>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -120,7 +124,7 @@ function Reports({ settings }: ReportsProps) {
           </Card>
         </Col>
         <Col span={12}>
-          <Card title="Popular Time Slots">
+          <Card title={t('reports.popularSlots')}>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={popularSlotsData} layout="vertical">
                 <CartesianGrid strokeDasharray="3 3" />
@@ -134,7 +138,7 @@ function Reports({ settings }: ReportsProps) {
         </Col>
       </Row>
 
-      <Card title="All Bookings">
+      <Card title={t('reports.allBookings')}>
         <Table
           dataSource={data.bookings}
           columns={[

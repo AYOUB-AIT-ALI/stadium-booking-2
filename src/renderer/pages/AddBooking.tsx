@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useLang } from '../context/LanguageContext';
 
 interface AddBookingProps {
   settings: any;
@@ -35,6 +36,7 @@ const labelStyle: React.CSSProperties = {
 function AddBooking({ settings }: AddBookingProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLang();
   const prefill = (location.state as any) || {};
 
   const [clientName, setClientName] = useState('');
@@ -69,7 +71,7 @@ function AddBooking({ settings }: AddBookingProps) {
     e.preventDefault();
     setError('');
     if (!clientName || !phone || !date || !startTime) {
-      setError('Please fill in all required fields.');
+      setError(t('addBooking.requiredFields'));
       return;
     }
     setLoading(true);
@@ -94,8 +96,8 @@ function AddBooking({ settings }: AddBookingProps) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>New Booking</div>
-        <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>Create a new stadium booking</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>{t('addBooking.title')}</div>
+        <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>{t('addBooking.subtitle')}</div>
       </div>
 
       <div style={{
@@ -107,31 +109,31 @@ function AddBooking({ settings }: AddBookingProps) {
       }}>
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>👤 Client Name *</label>
+            <label style={labelStyle}>👤 {t('addBooking.clientName')} *</label>
             <input
               style={inputStyle}
               value={clientName}
               onChange={(e) => setClientName(e.target.value)}
-              placeholder="Enter client name"
+              placeholder={t('addBooking.placeholderClient')}
               onFocus={(e) => e.target.style.borderColor = '#10b981'}
               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
             />
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>📞 Phone Number *</label>
+            <label style={labelStyle}>📞 {t('addBooking.phone')} *</label>
             <input
               style={inputStyle}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="0612345678"
+              placeholder={t('addBooking.placeholderPhone')}
               onFocus={(e) => e.target.style.borderColor = '#10b981'}
               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
             />
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>📅 Date *</label>
+            <label style={labelStyle}>📅 {t('addBooking.date')} *</label>
             <input
               type="date"
               style={inputStyle}
@@ -147,7 +149,7 @@ function AddBooking({ settings }: AddBookingProps) {
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>⏰ Start Time *</label>
+            <label style={labelStyle}>⏰ {t('addBooking.startTime')} *</label>
             <select
               style={{ ...inputStyle, appearance: 'none', background: '#ffffff' }}
               value={startTime}
@@ -155,21 +157,21 @@ function AddBooking({ settings }: AddBookingProps) {
               onFocus={(e) => e.target.style.borderColor = '#10b981'}
               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
             >
-              <option value="">Select start time</option>
+              <option value="">{t('addBooking.selectStart')}</option>
               {slots.map((slot, i) => (
                 <option
                   key={i}
                   value={slot.start}
                   disabled={slot.status === 'booked' || slot.status === 'expired'}
                 >
-                  {slot.start} {slot.status === 'booked' ? `– Booked by ${slot.bookedBy}` : ''}
+                  {slot.start} {slot.status === 'booked' ? `– ${t('addBooking.bookedBy')} ${slot.bookedBy}` : ''}
                 </option>
               ))}
             </select>
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>🔚 End Time</label>
+            <label style={labelStyle}>🔚 {t('addBooking.endTime')}</label>
             <input
               style={{ ...inputStyle, background: '#f8fafc', color: '#64748b', cursor: 'default' }}
               value={endTime}
@@ -178,7 +180,7 @@ function AddBooking({ settings }: AddBookingProps) {
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>💰 Price *</label>
+            <label style={labelStyle}>💰 {t('addBooking.price')} *</label>
             <div style={{ position: 'relative' }}>
               <span style={{
                 position: 'absolute',
@@ -203,12 +205,12 @@ function AddBooking({ settings }: AddBookingProps) {
           </div>
 
           <div style={{ marginBottom: 18 }}>
-            <label style={labelStyle}>📝 Notes</label>
+            <label style={labelStyle}>📝 {t('addBooking.notes')}</label>
             <textarea
               style={{ ...inputStyle, resize: 'vertical', minHeight: 80, fontFamily: 'inherit' }}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Additional notes..."
+              placeholder={t('addBooking.placeholderNotes')}
               onFocus={(e) => e.target.style.borderColor = '#10b981'}
               onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
             />
@@ -235,7 +237,7 @@ function AddBooking({ settings }: AddBookingProps) {
                 onChange={(e) => setPaid(e.target.checked)}
                 style={{ display: 'none' }}
               />
-              <span style={{ fontSize: 14, color: '#334155', fontWeight: 500 }}>Mark as paid</span>
+              <span style={{ fontSize: 14, color: '#334155', fontWeight: 500 }}>{t('addBooking.markAsPaid')}</span>
             </label>
           </div>
 
@@ -271,7 +273,7 @@ function AddBooking({ settings }: AddBookingProps) {
               onMouseEnter={(e) => { e.currentTarget.style.background = '#f8fafc'; }}
               onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff'; }}
             >
-              Cancel
+              {t('addBooking.cancel')}
             </button>
             <button
               type="submit"
@@ -301,7 +303,7 @@ function AddBooking({ settings }: AddBookingProps) {
                 }
               }}
             >
-              {loading ? 'Creating...' : 'Create Booking'}
+              {loading ? t('addBooking.creating') : t('addBooking.create')}
             </button>
           </div>
         </form>

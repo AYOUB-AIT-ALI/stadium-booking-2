@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLang } from '../context/LanguageContext';
 
 interface Booking {
   id: string;
@@ -25,6 +26,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 function BookingHistory() {
+  const { t } = useLang();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -48,7 +50,7 @@ function BookingHistory() {
 
   const handleDelete = async (booking: Booking) => {
     const confirmed = await window.electronAPI.confirm(
-      `Delete booking #${booking.bookingNumber}? This action cannot be undone.`
+      t('history.deleteConfirm', booking.bookingNumber)
     );
     if (!confirmed) return;
     const res = await window.electronAPI.deleteBooking(booking.id);
@@ -84,8 +86,8 @@ function BookingHistory() {
   return (
     <div>
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>Booking History</div>
-        <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>Manage and review all bookings</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>{t('history.title')}</div>
+        <div style={{ fontSize: 13, color: '#64748b', marginTop: 2 }}>{t('history.subtitle')}</div>
       </div>
 
       <div style={{
@@ -104,7 +106,7 @@ function BookingHistory() {
           <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: '#94a3b8' }}>🔍</span>
           <input
             style={{ ...inputStyle, paddingLeft: 36, width: '100%' }}
-            placeholder="Search by name, phone or booking #..."
+            placeholder={t('history.searchPlaceholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onFocus={(e) => e.target.style.borderColor = '#10b981'}
@@ -137,7 +139,7 @@ function BookingHistory() {
             boxShadow: '0 2px 8px rgba(16,185,129,0.25)',
           }}
         >
-          Search
+          {t('history.search')}
         </button>
       </div>
 
@@ -152,8 +154,8 @@ function BookingHistory() {
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ background: '#f8fafc' }}>
-                {['BOOKING #', 'CLIENT', 'PHONE', 'DATE', 'TIME SLOT', 'PRICE', 'STATUS', 'ACTIONS'].map((h) => (
-                  <th key={h} style={{
+                {['history.colBooking', 'history.colClient', 'history.colPhone', 'history.colDate', 'history.colTime', 'history.colPrice', 'history.colStatus', 'history.colActions'].map((key) => (
+                  <th key={key} style={{
                     padding: '12px 14px',
                     textAlign: 'left',
                     fontSize: 11,
@@ -162,18 +164,18 @@ function BookingHistory() {
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px',
                     borderBottom: '2px solid #e2e8f0',
-                  }}>{h}</th>
+                  }}>{t(key)}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={8} style={{ padding: '40px 14px', textAlign: 'center', color: '#94a3b8' }}>Loading...</td>
+                  <td colSpan={8} style={{ padding: '40px 14px', textAlign: 'center', color: '#94a3b8' }}>{t('history.loading')}</td>
                 </tr>
               ) : bookings.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ padding: '40px 14px', textAlign: 'center', color: '#94a3b8' }}>No bookings found.</td>
+                  <td colSpan={8} style={{ padding: '40px 14px', textAlign: 'center', color: '#94a3b8' }}>{t('history.noBookings')}</td>
                 </tr>
               ) : (
                 bookings.map((b, idx) => (
@@ -215,7 +217,7 @@ function BookingHistory() {
                             cursor: 'pointer',
                             transition: 'all 0.1s',
                           }}
-                          title="Delete booking"
+                          title={t('history.deleteTitle')}
                           onMouseEnter={(e) => { e.currentTarget.style.background = '#fee2e2'; }}
                           onMouseLeave={(e) => { e.currentTarget.style.background = '#fef2f2'; }}
                         >
@@ -233,7 +235,7 @@ function BookingHistory() {
                             cursor: 'pointer',
                             transition: 'all 0.1s',
                           }}
-                          title="Download receipt"
+                          title={t('history.downloadTitle')}
                           onMouseEnter={(e) => { e.currentTarget.style.background = '#d1fae5'; }}
                           onMouseLeave={(e) => { e.currentTarget.style.background = '#f0fdf4'; }}
                         >

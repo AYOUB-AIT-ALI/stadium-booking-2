@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLang } from '../context/LanguageContext';
 
 interface TodayProps {
   settings: any;
@@ -16,6 +17,7 @@ interface Slot {
 
 function Today({ settings }: TodayProps) {
   const navigate = useNavigate();
+  const { t } = useLang();
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(true);
   const selectedDate = new Date().toISOString().slice(0, 10);
@@ -88,7 +90,7 @@ function Today({ settings }: TodayProps) {
   return (
     <div>
       <div style={{ marginBottom: 20 }}>
-        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>Today's Overview</div>
+        <div style={{ fontWeight: 700, fontSize: 20, color: '#0f172a' }}>{t('today.title')}</div>
       </div>
 
       <div style={{
@@ -98,9 +100,9 @@ function Today({ settings }: TodayProps) {
         marginBottom: 24,
       }}>
         {[
-          { label: '📋 Bookings Today', value: bookedSlots.length, color: '#0f172a' },
-          { label: '💰 Revenue Today', value: `DHs ${totalRevenue.toFixed(2)}`, color: '#059669' },
-          { label: '📈 Occupancy', value: `${occupancy}%`, color: '#2563eb' },
+          { label: `📋 ${t('today.bookingsToday')}`, value: bookedSlots.length, color: '#0f172a' },
+          { label: `💰 ${t('today.revenueToday')}`, value: `DHs ${totalRevenue.toFixed(2)}`, color: '#059669' },
+          { label: `📈 ${t('today.occupancy')}`, value: `${occupancy}%`, color: '#2563eb' },
         ].map((card, i) => (
           <div
             key={i}
@@ -120,11 +122,11 @@ function Today({ settings }: TodayProps) {
 
       {loading ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: 14 }}>
-          Loading schedule...
+          {t('today.loading')}
         </div>
       ) : slots.length === 0 ? (
         <div style={{ textAlign: 'center', padding: 60, color: '#94a3b8', fontSize: 14 }}>
-          No time slots configured for today.
+          {t('today.noSlots')}
         </div>
       ) : (
         <div style={{
@@ -166,7 +168,7 @@ function Today({ settings }: TodayProps) {
                     padding: '3px 10px',
                     borderRadius: 9999,
                   }}>
-                    Available
+                    {t('today.available')}
                   </span>
                 )}
                 {slot.status === 'booked' && (
@@ -178,7 +180,7 @@ function Today({ settings }: TodayProps) {
                     padding: '3px 10px',
                     borderRadius: 9999,
                   }}>
-                    Booked
+                    {t('today.booked')}
                   </span>
                 )}
                 {slot.status === 'expired' && (
@@ -190,7 +192,7 @@ function Today({ settings }: TodayProps) {
                     padding: '3px 10px',
                     borderRadius: 9999,
                   }}>
-                    Expired
+                    {t('today.expired')}
                   </span>
                 )}
               </div>
@@ -234,14 +236,14 @@ function Today({ settings }: TodayProps) {
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(16,185,129,0.3)';
                     }}
                   >
-                    Book Now ➜
+                    {t('today.bookNow')}
                   </button>
                 </div>
               )}
 
               {slot.status === 'expired' && (
                 <div style={{ fontSize: 11, color: '#94a3b8', fontStyle: 'italic', marginTop: 4 }}>
-                  This time slot has passed.
+                    {t('today.slotPassed')}
                 </div>
               )}
             </div>
